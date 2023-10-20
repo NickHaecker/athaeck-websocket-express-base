@@ -1,4 +1,5 @@
 import WebSocket from "ws";
+import { BaseWebSocketHook, BaseWebSocketListener } from ".";
 
 export function GetGUID(): string {
     function s4() {
@@ -24,3 +25,19 @@ export function Broadcast(WSS: WebSocket.Server, body: (client: WebSocket) => vo
         body(client)
     }
 }
+
+class StandardWebSocketDistributor extends BaseWebSocketListener {
+    constructor(key: string) {
+        super(key)
+    }
+    listener = (body: any) => {
+        const ws = this.webSocketServer.WebSocket
+        const jsonBody = JSON.parse(body.toString());
+        const event = jsonBody.hasOwnProperty("eventName") ? jsonBody["eventName"] : ""
+        const data = jsonBody.hasOwnProperty("data") ? jsonBody["data"] : ""
+        console.log(event)
+        ws.emit(event, data)
+    }
+
+}
+export const StandardDistributor = new StandardWebSocketDistributor(BaseWebSocketHook.message)
