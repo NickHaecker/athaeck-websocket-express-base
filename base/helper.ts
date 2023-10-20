@@ -26,7 +26,7 @@ export function Broadcast(WSS: WebSocket.Server, body: (client: WebSocket) => vo
     }
 }
 
-class StandardWebSocketDistributor extends BaseWebSocketListener {
+export class StandardWebSocketDistributor extends BaseWebSocketListener {
     constructor(key: string) {
         super(key)
     }
@@ -40,4 +40,4 @@ class StandardWebSocketDistributor extends BaseWebSocketListener {
     }
 
 }
-export const StandardDistributor = new StandardWebSocketDistributor(BaseWebSocketHook.message)
+export const StandardDistributor = new StandardWebSocketDistributor(BaseWebSocketHook.MESSAGE)

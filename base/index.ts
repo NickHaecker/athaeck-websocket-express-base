@@ -2,7 +2,7 @@ import WebSocket from "ws";
 import { BaseExpressApplication } from "../athaeck-express-base/base/express";
 
 export enum BaseWebSocketHook {
-    connection = "connection", message = "message"
+    CONNECTION = "connection", MESSAGE = "message"
 }
 
 export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
@@ -14,7 +14,7 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
     constructor(port: number) {
         super()
         this.webSocketServer = new WebSocket.Server({ port })
-        this.webSocketServer.on(BaseWebSocketHook.connection, this.OnConnection.bind(this))
+        this.webSocketServer.on(BaseWebSocketHook.CONNECTION, this.OnConnection.bind(this))
     }
 
     public get WebSocket() {
