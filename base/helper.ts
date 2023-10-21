@@ -16,10 +16,16 @@ export class ReceivedEvent {
         this.data = {};
     }
 
+    public get JSONString() {
+        return JSON.stringify(this.data)
+    }
+
     public addData(key: string, value: any) {
         this.data[key] = value;
     }
+
 }
+
 export function Broadcast(WSS: WebSocket.Server, body: (client: WebSocket) => void) {
     for (let client of WSS.clients) {
         body(client)
@@ -27,6 +33,7 @@ export function Broadcast(WSS: WebSocket.Server, body: (client: WebSocket) => vo
 }
 
 export class StandardWebSocketDistributor extends BaseWebSocketListener {
+
     constructor(key: string) {
         super(key)
     }
@@ -38,6 +45,8 @@ export class StandardWebSocketDistributor extends BaseWebSocketListener {
         console.log(event)
         ws.emit(event, data)
     }
+    protected Init(): void {
 
+    }
 }
 export const StandardDistributor = new StandardWebSocketDistributor(BaseWebSocketHook.MESSAGE)
