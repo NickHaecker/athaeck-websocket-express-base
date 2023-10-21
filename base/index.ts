@@ -27,7 +27,9 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
 
     private OnConnection = (webSocket: WebSocket.WebSocket) => {
         this.webSocket = webSocket;
+        this.Init()
     }
+    protected abstract Init():void;
     public TakeBaseWebSocketListener(webSocketListener: BaseWebSocketListener): void {
         webSocketListener.TakeWebSocketServer(this);
         this.webSocket.on(webSocketListener.ListenerKey, webSocketListener.listener);
@@ -58,6 +60,8 @@ export abstract class BaseWebSocketListener {
 
     public TakeWebSocketServer(webSocketServer: BaseWebSocketExpressAdoon): void {
         this.webSocketServer = webSocketServer
+        this.Init()
     }
+    protected abstract Init():void;
 }
 
