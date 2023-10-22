@@ -18,7 +18,7 @@ export class ReceivedEvent {
     }
 
     public get JSONString() {
-        return JSON.stringify(this.data)
+        return JSON.stringify(this)
     }
 
     public addData(key: string, value: any) {
@@ -36,11 +36,18 @@ export function Broadcast(WSS: WebSocket.Server, body: (client: WebSocket) => vo
 export class StandardWebSocketDistributor extends BaseWebSocketListener {
     listenerKey: string;
 
-    constructor(webSocketServer: BaseWebSocketExpressAdoon, webSocket: WebSocket.WebSocket,hooks:WebSocketHooks) {
-        super(webSocketServer,webSocket,hooks)
+    constructor(webSocketServer: BaseWebSocketExpressAdoon, webSocket: WebSocket.WebSocket, hooks: WebSocketHooks) {
+        super(webSocketServer, webSocket, hooks)
+
+    }
+    protected Init(): void {
+
+    }
+    protected SetKey(): void {
         this.listenerKey = BaseWebSocketHook.MESSAGE
     }
-    listener = (body: any) => {
+
+    protected listener(body: any) {
         const jsonBody = JSON.parse(body.toString());
         const event = jsonBody.hasOwnProperty("eventName") ? jsonBody["eventName"] : ""
         const data = jsonBody.hasOwnProperty("data") ? jsonBody["data"] : ""
