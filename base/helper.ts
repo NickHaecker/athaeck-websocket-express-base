@@ -1,5 +1,6 @@
 import WebSocket from "ws";
-import { BaseWebSocketHook, BaseWebSocketListener } from ".";
+import { BaseWebSocketExpressAdoon, BaseWebSocketHook, BaseWebSocketListener } from ".";
+import { WebSocketHooks } from "./hooks";
 
 export function GetGUID(): string {
     function s4() {
@@ -33,9 +34,11 @@ export function Broadcast(WSS: WebSocket.Server, body: (client: WebSocket) => vo
 }
 
 export class StandardWebSocketDistributor extends BaseWebSocketListener {
+    listenerKey: string;
 
-    constructor(key: string) {
-        super(key)
+    constructor(webSocketServer: BaseWebSocketExpressAdoon, webSocket: WebSocket.WebSocket,hooks:WebSocketHooks) {
+        super(webSocketServer,webSocket,hooks)
+        this.listenerKey = BaseWebSocketHook.MESSAGE
     }
     listener = (body: any) => {
         const jsonBody = JSON.parse(body.toString());
@@ -44,8 +47,5 @@ export class StandardWebSocketDistributor extends BaseWebSocketListener {
         console.log(event)
         this.webSocket.emit(event, data)
     }
-    protected Init(): void {
 
-    }
 }
-export const StandardDistributor = new StandardWebSocketDistributor(BaseWebSocketHook.MESSAGE)

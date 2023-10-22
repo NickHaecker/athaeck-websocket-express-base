@@ -6,11 +6,15 @@ export enum BaseWebSocketHook {
     CONNECTION = "connection", MESSAGE = "message"
 }
 
+export type OpenConnection={
+    socket:WebSocket.WebSocket,
+    hooks:WebSocketHooks
+}
+
 export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
     protected webSocketServer: WebSocket.Server;
-    protected webSocket: WebSocket.WebSocket;
     protected webSocketHooks: WebSocketHooks
-    protected data: { [key: string]: any }
+    protected factory: WebSocketListenerFactory
 
     constructor(port: number) {
         super()
@@ -19,10 +23,7 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
         this.webSocketHooks = new WebSocketHooks()
     }
 
-    public get WebSocket() {
-        return this.webSocket
-    }
-    public get WebSocketHooks(){
+    public get WebSocketHooks() {
         return this.webSocketHooks
     }
     public get WebSocketServer(): any {
@@ -30,31 +31,25 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
     }
 
     private OnConnection = (webSocket: WebSocket.WebSocket) => {
-        this.webSocket = webSocket;
-        this.webSocketHooks.DispatchHook(WebSocketHooks.NEW_CONNECTION,webSocket)
-        this.Init()
-    }
-    protected abstract Init():void;
-
-    public TakeBaseWebSocketListener(webSocketListener: BaseWebSocketListener): void {
-        webSocketListener.TakeWebSocketServer(this);
-    }
-    public AddKey(key: string, value: any): void {
-        this.data[key] = value;
-    }
-    public GetKey(key: string): any {
-        return this.data[key]
-    }
+        const hooks: WebSocketHooks = new WebSocketHooks()
+        this.factory.CreateListener(webSocket, this,hooks)
+    }   
+    abstract Init(webSocket:WebSocket.WebSocket,hooks:WebSocketHooks):void
 
 }
 
 export abstract class BaseWebSocketListener {
     protected webSocketServer: BaseWebSocketExpressAdoon
     protected webSocket: WebSocket.WebSocket
-    protected listenerKey: string
+    abstract listenerKey: string
+    protected webSocketHooks:WebSocketHooks
 
-    constructor(key: string) {
-        this.listenerKey = key
+    constructor(webSocketServer: BaseWebSocketExpressAdoon, webSocket: WebSocket.WebSocket,hooks: WebSocketHooks) {
+        this.webSocketServer = webSocketServer
+        this.webSocket = webSocket
+        this.webSocketHooks = hooks
+        this.webSocket.on(this.ListenerKey, this.listener.bind(this));
+
     }
     public get ListenerKey() {
         return this.listenerKey
@@ -63,17 +58,23 @@ export abstract class BaseWebSocketListener {
     listener = (body: any) => {
 
     }
-
-    public TakeWebSocketServer(webSocketServer: BaseWebSocketExpressAdoon): void {
-        this.webSocketServer = webSocketServer
-        webSocketServer.WebSocketHooks.SubscribeHookListener(WebSocketHooks.NEW_CONNECTION,this.OnNewConnection.bind(this))
-        this.Init()
+}
+export abstract class WebSocketListenerFactory {
+    protected webSocketListener: any[] = []
+    constructor() {
+        this.TakeListener()
     }
-    private OnNewConnection(webSocket:WebSocket.WebSocket):void{
-        this.webSocket = webSocket
-        webSocket.on(this.ListenerKey, this.listener.bind(this));
-
+    protected abstract TakeListener(): void
+    protected AddListener(listener: any[]){
+        this.webSocketListener = listener
     }
-    protected abstract Init():void;
+    public CreateListener(webSocket: WebSocket.WebSocket, expressApplicationAddon: BaseWebSocketExpressAdoon,hooks:WebSocketHooks) {
+        for (const Listener of this.webSocketListener) {
+            if(!Listener){
+                return;
+            }
+            new Listener(expressApplicationAddon, webSocket,hooks)
+        }
+    }
 }
 
