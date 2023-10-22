@@ -38,12 +38,11 @@ export class StandardWebSocketDistributor extends BaseWebSocketListener {
         super(key)
     }
     listener = (body: any) => {
-        const ws = this.webSocketServer.WebSocket
         const jsonBody = JSON.parse(body.toString());
         const event = jsonBody.hasOwnProperty("eventName") ? jsonBody["eventName"] : ""
         const data = jsonBody.hasOwnProperty("data") ? jsonBody["data"] : ""
         console.log(event)
-        ws.emit(event, data)
+        this.webSocket.emit(event, data)
     }
     protected Init(): void {
 

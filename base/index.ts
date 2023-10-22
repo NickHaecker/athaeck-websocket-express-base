@@ -26,12 +26,12 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
         return this.webSocketHooks
     }
     public get WebSocketServer(): any {
-        return this.WebSocketServer
+        return this.webSocketServer
     }
 
     private OnConnection = (webSocket: WebSocket.WebSocket) => {
         this.webSocket = webSocket;
-        this.webSocketHooks.DispatchHook(WebSocketHooks.NEW_CONNECTION,null)
+        this.webSocketHooks.DispatchHook(WebSocketHooks.NEW_CONNECTION,webSocket)
         this.Init()
     }
     protected abstract Init():void;
@@ -50,6 +50,7 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
 
 export abstract class BaseWebSocketListener {
     protected webSocketServer: BaseWebSocketExpressAdoon
+    protected webSocket: WebSocket.WebSocket
     protected listenerKey: string
 
     constructor(key: string) {
@@ -68,8 +69,9 @@ export abstract class BaseWebSocketListener {
         webSocketServer.WebSocketHooks.SubscribeHookListener(WebSocketHooks.NEW_CONNECTION,this.OnNewConnection.bind(this))
         this.Init()
     }
-    private OnNewConnection(data:any):void{
-        this.webSocketServer.WebSocket.on(this.ListenerKey, this.listener.bind(this));
+    private OnNewConnection(webSocket:WebSocket.WebSocket):void{
+        this.webSocket = webSocket
+        webSocket.on(this.ListenerKey, this.listener.bind(this));
 
     }
     protected abstract Init():void;
