@@ -17,7 +17,7 @@ export class ReceivedEvent {
         this.data = {};
     }
 
-    public get JSONString() {
+    public get JSONString():string {
         return JSON.stringify(this)
     }
 
@@ -34,6 +34,7 @@ export function Broadcast(WSS: WebSocket.Server, body: (client: WebSocket) => vo
 }
 
 export class StandardWebSocketDistributor extends BaseWebSocketListener {
+
     listenerKey: string;
 
     constructor(webSocketServer: BaseWebSocketExpressAdoon, webSocket: WebSocket.WebSocket, hooks: WebSocketHooks) {
@@ -51,8 +52,9 @@ export class StandardWebSocketDistributor extends BaseWebSocketListener {
         const jsonBody = JSON.parse(body.toString());
         const event = jsonBody.hasOwnProperty("eventName") ? jsonBody["eventName"] : ""
         const data = jsonBody.hasOwnProperty("data") ? jsonBody["data"] : ""
-        console.log(event)
         this.webSocket.emit(event, data)
     }
+    public OnDisconnection(webSocket: WebSocket.WebSocket, hooks: WebSocketHooks): void {
 
+    }
 }
