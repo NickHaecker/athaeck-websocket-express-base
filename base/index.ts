@@ -59,7 +59,6 @@ export abstract class BaseWebSocketListener {
     protected webSocketHooks: WebSocketHooks
 
     constructor(webSocketServer: BaseWebSocketExpressAdoon, webSocket: WebSocket.WebSocket, hooks: WebSocketHooks) {
-        console.log("instanciated BaseWebSocketListener")
         this.webSocketServer = webSocketServer
         this.webSocket = webSocket
         this.webSocketHooks = hooks
