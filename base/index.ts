@@ -59,6 +59,7 @@ export abstract class BaseWebSocketListener {
     protected webSocketHooks: WebSocketHooks
 
     constructor(webSocketServer: BaseWebSocketExpressAdoon, webSocket: WebSocket.WebSocket, hooks: WebSocketHooks) {
+        console.log("instanciated BaseWebSocketListener")
         this.webSocketServer = webSocketServer
         this.webSocket = webSocket
         this.webSocketHooks = hooks
@@ -90,7 +91,9 @@ export abstract class BaseWebSocketListener {
 export abstract class WebSocketListenerFactory {
     protected webSocketListener: any[] = []
     protected activeListener: BaseWebSocketListener[] = []
-    constructor() {
+    protected rootFolder:string;
+    constructor(root:string) {
+        this.rootFolder = root
         this.TakeListener()
     }
     protected abstract TakeListener(): void
@@ -105,7 +108,6 @@ export abstract class WebSocketListenerFactory {
             const l: BaseWebSocketListener = new Listener(expressApplicationAddon, webSocket, hooks)
             this.activeListener.push(l)
         }
-        console.log("created listener",this.activeListener)
     }
     public RemoveListener(webSocket: WebSocket.WebSocket, hooks: WebSocketHooks) {
         const newListener: BaseWebSocketListener[] = []
