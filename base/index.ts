@@ -37,7 +37,7 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
         this.Init(webSocket, hooks)
     }
     private OnDisconnection = (webSocket: WebSocket.WebSocket) => {
-        console.log("disconnect")
+        console.log("disconnection")
         const hooks: WebSocketHooks | undefined = this.Disconnect(webSocket)
         if (!hooks) {
             return
