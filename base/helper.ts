@@ -52,6 +52,9 @@ export class StandardWebSocketDistributor extends BaseWebSocketListener {
         const jsonBody = JSON.parse(body.toString());
         const event = jsonBody.hasOwnProperty("eventName") ? jsonBody["eventName"] : ""
         const data = jsonBody.hasOwnProperty("data") ? jsonBody["data"] : ""
+        if(event !== "SET_FACTOR" && event !== "MOVE_CLIENT"){
+        console.log(event)
+        }
         this.webSocket.emit(event, data)
     }
     public OnDisconnection(webSocket: WebSocket.WebSocket, hooks: WebSocketHooks): void {
