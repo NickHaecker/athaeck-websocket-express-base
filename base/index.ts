@@ -32,10 +32,15 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
 
     private OnConnection = (webSocket: WebSocket.WebSocket) => {
         console.log("new connection")
+        if(!this.ValidateConnection(webSocket)){
+            webSocket.close()
+            return
+        }
         const hooks: WebSocketHooks = this.CreateHooks()
         this.factory.CreateListener(webSocket, this, hooks)
         this.Init(webSocket, hooks)
     }
+    protected abstract ValidateConnection(webSocket:WebSocket.WebSocket):boolean;
     protected abstract CreateHooks():WebSocketHooks
     private OnDisconnection = (webSocket: WebSocket.WebSocket) => {
         console.log("disconnection")
