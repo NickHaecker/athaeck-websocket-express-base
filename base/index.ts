@@ -23,7 +23,6 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
         super()
         this.webSocketServer = new WebSocket.Server({ port })
         this.webSocketServer.on(BaseWebSocketHook.CONNECTION, this.OnConnection.bind(this))
-        this.webSocketServer.on(BaseWebSocketHook.CLOSE, this.OnDisconnection.bind(this))
     }
 
     public get WebSocketServer(): WebSocket.Server {
@@ -32,6 +31,7 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
 
     private OnConnection = (webSocket: WebSocket.WebSocket) => {
         console.log("new connection")
+        webSocket.on(BaseWebSocketHook.CLOSE, this.OnDisconnection.bind(this))
         if(!this.ValidateConnection(webSocket)){
             webSocket.close()
             return
