@@ -31,6 +31,7 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
     return this.webSocketServer;
   }
   private OnClose = (webSocketServer: Server) => {
+    console.log("Server closed")
     this.webSocketServer.off(
       BaseWebSocketHook.CONNECTION,
       this.OnConnection.bind(this)
