@@ -36,7 +36,6 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
       BaseWebSocketHook.CONNECTION,
       this.OnConnection.bind(this)
     );
-    console.log("4444");
   };
 
   private OnConnection = (webSocket: WebSocket.WebSocket) => {
