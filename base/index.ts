@@ -30,6 +30,7 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
   public get WebSocketServer(): WebSocket.Server {
     return this.webSocketServer;
   }
+
   private OnClose = (webSocketServer: Server) => {
     console.log("Server closed")
     this.webSocketServer.off(
@@ -40,28 +41,44 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
 
   private OnConnection = (webSocket: WebSocket.WebSocket) => {
     console.log("new connection");
-    webSocket.on(BaseWebSocketHook.CLOSE, this.OnDisconnection.bind(this));
+
+    webSocket.on(BaseWebSocketHook.CLOSE, (code: number, reason: string) => {
+      this.OnDisconnection(webSocket);
+    });
+
     if (!this.ValidateConnection(webSocket)) {
       webSocket.close();
       return;
     }
+
     const hooks: WebSocketHooks = this.CreateHooks();
     this.factory.CreateListener(webSocket, this, hooks);
     this.Init(webSocket, hooks);
   };
+
   protected abstract ValidateConnection(
     webSocket: WebSocket.WebSocket
   ): boolean;
+
   protected abstract CreateHooks(): WebSocketHooks;
-  private OnDisconnection = (webSocket: WebSocket.WebSocket) => {
+
+  private OnDisconnection(webSocket: WebSocket.WebSocket) {
     console.log("disconnection");
+
+    webSocket.off(BaseWebSocketHook.CLOSE, (code: number, reason: string) => {
+      this.OnDisconnection(webSocket);
+    });
+
     const hooks: WebSocketHooks | undefined = this.Disconnect(webSocket);
     if (!hooks) {
       return;
     }
+
     this.factory.RemoveListener(webSocket, hooks);
   };
+
   abstract Init(webSocket: WebSocket.WebSocket, hooks: WebSocketHooks): void;
+
   abstract Disconnect(
     webSocket: WebSocket.WebSocket
   ): WebSocketHooks | undefined;
