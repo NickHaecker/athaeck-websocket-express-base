@@ -2,12 +2,12 @@ import WebSocket from "ws";
 import { BaseWebSocketExpressAdoon, BaseWebSocketHook, BaseWebSocketListener } from ".";
 import { WebSocketHooks } from "./hooks";
 
-export function GetGUID(): string {
+export function GetGUID(pattern: string): string {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
-    return s4() + '-' + s4() 
-    // + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    return pattern.replaceAll("{{id}}", s4())
+
 }
 export class ReceivedEvent {
     public eventName: string;
@@ -18,7 +18,7 @@ export class ReceivedEvent {
         this.data = {};
     }
 
-    public get JSONString():string {
+    public get JSONString(): string {
         return JSON.stringify(this)
     }
 
@@ -53,8 +53,8 @@ export class StandardWebSocketDistributor extends BaseWebSocketListener {
         const jsonBody = JSON.parse(body.toString());
         const event = jsonBody.hasOwnProperty("eventName") ? jsonBody["eventName"] : ""
         const data = jsonBody.hasOwnProperty("data") ? jsonBody["data"] : ""
-        if(event !== "SET_FACTOR" && event !== "MOVE_CLIENT"){
-        console.log(event)
+        if (event !== "SET_FACTOR" && event !== "MOVE_CLIENT") {
+            console.log(event)
         }
         this.webSocket.emit(event, data)
     }
