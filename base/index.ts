@@ -98,7 +98,6 @@ export abstract class BaseWebSocketListener {
     this.webSocketServer = webSocketServer;
     this.webSocket = webSocket;
     this.webSocketHooks = hooks;
-    this.Init();
 
     this.SetKey();
     this.webSocket.on(this.ListenerKey, this.listener.bind(this));
@@ -106,7 +105,6 @@ export abstract class BaseWebSocketListener {
   public get WebSocket(): WebSocket.WebSocket {
     return this.webSocket;
   }
-  protected abstract Init(): void;
   protected abstract SetKey(): void;
 
   public get ListenerKey(): string {
