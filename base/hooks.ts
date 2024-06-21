@@ -9,6 +9,6 @@ export class WebSocketHooks extends EventEmitter {
         this.on(hook, listener);
     }
     public UnSubscribeListener(hook: string, listener: (data: any) => void) {
-        this.off(hook, listener)
+        this.removeListener(hook, listener)
     }
 }

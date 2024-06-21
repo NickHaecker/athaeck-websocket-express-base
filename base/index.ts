@@ -70,7 +70,9 @@ export abstract class BaseWebSocketExpressAdoon extends BaseExpressApplication {
     });
 
     const hooks: WebSocketHooks | undefined = this.Disconnect(webSocket);
+
     if (!hooks) {
+
       return;
     }
 
