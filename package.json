@@ -19,6 +19,6 @@
     "@types/ws": "^8.5.8",
     "athaeck-express-base": "file:./athaeck-express-base",
     "socket.io": "^4.7.2",
-    "ws": "^8.14.2"
+    "ws": "^8.17.1"
   }
 }
