@@ -1,6 +1,14 @@
-import { BaseWebSocketConnector } from "./baseWebSocketConnector";
+// import { BaseWebSocketExpressAdoon } from ".";
 
-export interface TakeListener {
-    TakeConnector(connector: BaseWebSocketConnector): void
-    RemoveConnector(connector: BaseWebSocketConnector): void
+import { BaseWebSocketSynchronizeable } from "./baseWebSocketSynchronizeable";
+
+// export interface PassBaseWebSocketExpressAddon {
+//     TakeBaseWebSocketExpressAdoon(addon: BaseWebSocketExpressAdoon): void;
+//     RemoveBaseWebSocketExpressAdoon(addon: BaseWebSocketExpressAdoon): void;
+// }
+
+export interface SynchronizableComponent {
+
+    TakeSynchronizable(baseSynchronizable: BaseWebSocketSynchronizeable): void;
+    RemoveSynchronizable(baseSynchronizable: BaseWebSocketSynchronizeable): void
 }
